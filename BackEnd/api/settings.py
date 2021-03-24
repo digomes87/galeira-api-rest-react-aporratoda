@@ -19,6 +19,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #apps here
+    'products',
+
+    #system for runner
+    'rest_framework',
+    'django_extensions',
+    'django_filters',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -66,8 +75,14 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
+REST_FRAMEWORK = {
+'DEFAULT_FILTER_BACKENDS':  (
+    "django.filters.rest_framework.DjangoFilterBackend",
+    "rest_framework.filter.SerchFilter",
+    "rest_framework.filters.OrderingFilter",
+  ),
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

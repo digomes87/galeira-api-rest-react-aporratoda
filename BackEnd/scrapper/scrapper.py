@@ -5,7 +5,7 @@ import random
 from datetime import datetime
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
-from scrapper.scra_config import (
+from scra_config import (
     get_web_driver_options,
     get_chrome_web_driver,
     set_browser_as_incognito,
@@ -17,7 +17,54 @@ from scrapper.scra_config import (
     BASE_URL
 )
 
-class Scrapper:
+
+class Reporter:
+    def __init__(self, categories, base_url, currency, directory):
+        self.categories = categories
+        self.base_url = base_url
+        self.currency = currency
+        self.directory = f'{os.path.dirname(os.path.abspath(__file__))}/{directory}'
+
+    def run(self):
+        # self.generate_report('PS4')  # <---- single category
+        self.run_bot_on_all_categories()
+
+    def run_bot_on_all_categories(self):
+        for category in self.categories:
+            self.generate_report(category)
+            pause = random.randint(5, 7)
+            print(f"Sleeping for {pause}...")
+            time.sleep(pause)
+
+    def generate_report(self, category):
+        data = self.get_data_from_category(category)
+        full_directory = f'{self.directory}/{category}.json'
+        report = {
+            'date': self.get_now(),
+            'category': category,
+            'currency': self.currency,
+            'base_link': self.base_url,
+            'products': data
+        }
+        print(f"Creating report for {category}...")
+        if not os.path.exists(full_directory):
+            os.makedirs(os.path.dirname(full_directory), exist_ok=True)
+        with open(full_directory, 'w') as f:
+            json.dump(report, f)
+        print(f"Done for {category}...")
+
+    @staticmethod
+    def get_now():
+        now = datetime.now()
+        return now.strftime("%d/%m/%Y %H:%M:%S")
+
+    def get_data_from_category(self, category):
+        scraper = AmazonScraper(category, self.base_url, self.currency)
+        data = scraper.run()
+        return data
+
+
+class AmazonScraper:
     def __init__(self, search_term, base_url, currency):
         self.search_term = search_term
         self.base_url = base_url
@@ -172,41 +219,6 @@ class Scrapper:
             Exception()
         return float(price)
 
-class Reporter:
-    def __init__(self, categories, base_url, currency, directory):
-        self.categories = categories
-        self.base_url = base_url
-        self.currency = currency
-        self.directory = f'{os.path.dirname(os.path.abspath(__file__))}/{directory}'
-
-    def run(self):
-        self.generate_report('PS4')
-
-    def generate_report(self, category):
-        data = self.get_data_from_category(category)
-        full_directory = f'{self.directory}/{category}.json'
-        report = {
-            'date'      : self.get_now(),
-            'category'  : category,
-            'currency'  : self.currency,
-            'base_link' : self.base_url,
-            'product'   : data
-        }
-        print(f'Create report for {category}')
-        if not os.path.exists(full_directory):
-            os.makedirs(os.path.dirname(full_directory), exist_ok=True)
-            with open(full_directory, 'w') as f:
-                json.dump(report, f)
-            print(f"Done for {category}")
-    @staticmethod
-    def get_now(self):
-        now = datetime.now()
-        return now.strftime("%d/%m/%Y %H:%M:%S")
-
-    def get_data_from_category(self, category):
-        scrapper = Scrapper(category, self.base_url, self.currency)
-        data     = scrapper.run()
-        return data
 
 def main():
     reporter = Reporter(CATEGORIES, BASE_URL, CURRENCY, DIRECTORY)

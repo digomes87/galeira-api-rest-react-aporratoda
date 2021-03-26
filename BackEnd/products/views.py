@@ -1,11 +1,17 @@
-from django.shortcuts import render
-from rest_framework import APIview
+from rest_framework.views import APIView
+from .models import Product, Seller, Category
 
-
-class ProductList(APIview):
+class ProductsList(APIView):
   
 
   pass
+
+
+  def get(self, request):
+    products =  Product.objects.all()
+    # serializer
+
+
 
 
 

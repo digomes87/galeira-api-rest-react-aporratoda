@@ -76,11 +76,11 @@ DATABASES = {
 
 
 REST_FRAMEWORK = {
-'DEFAULT_FILTER_BACKENDS':  (
-    "django.filters.rest_framework.DjangoFilterBackend",
-    "rest_framework.filter.SerchFilter",
-    "rest_framework.filters.OrderingFilter",
-  ),
+    'DEFAULT_FILTER_BACKENDS':  (
+        "django.filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filter.SerchFilter",
+        "rest_framework.filters.OrderingFilter",
+      ),
 }
 
 

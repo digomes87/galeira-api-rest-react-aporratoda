@@ -19,9 +19,7 @@ router.register(r'seller', SellerViewSet)
 
 urlpatterns = [
   path('', include(router.urls)),
-  path('products', ProductsList.as_view()),
-  path('categories', category_list, name="category-list"),
+  path('products/', ProductsList.as_view()),
+  path('categories/', category_list, name="category-list"),
   path('categories/<int:pk>/', category_list, name="category-detail"),
-  path('sellers', SellerViewSet.as_view()),
-
 ]
